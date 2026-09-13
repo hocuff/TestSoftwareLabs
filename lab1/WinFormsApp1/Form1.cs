@@ -88,30 +88,28 @@ namespace WinFormsApp1
 
         private void add_Click(object sender, EventArgs e)
         {
-            firstNum = double.Parse(textBox1.Text);
-            operation = "+";
-            textBox1.Clear();
+            SetOperation("+");
         }
 
         private void subtraction_Click(object sender, EventArgs e)
         {
-            firstNum = double.Parse(textBox1.Text);
-            operation = "-";
-            textBox1.Clear();
+            if(string.IsNullOrWhiteSpace(textBox1.Text))
+            {
+                textBox1.Text = "-";
+                return;
+            }
+
+            SetOperation("-");
         }
 
         private void division_Click(object sender, EventArgs e)
         {
-            firstNum = double.Parse(textBox1.Text);
-            operation = "/";
-            textBox1.Clear();
+            SetOperation("/");
         }
 
         private void multiplication_Click(object sender, EventArgs e)
         {
-            firstNum = double.Parse(textBox1.Text);
-            operation = "*";
-            textBox1.Clear();
+            SetOperation("*");
         }
 
         private void equal_Click(object sender, EventArgs e)
@@ -133,7 +131,7 @@ namespace WinFormsApp1
                 textBox1.Text = "На ноль делить нельзя";
                 operation = "";
                 return;
-            }
+            }   
 
             double result = Calculate(firstNum, secondNum, operation);
 
@@ -162,6 +160,37 @@ namespace WinFormsApp1
                 default:
                     return second;
             }
+        }
+
+        private void SetOperation(string newOperation)
+        {
+            if (string.IsNullOrWhiteSpace(textBox1.Text))
+                return;
+
+            if (textBox1.Text == "-")
+                return;
+
+            double currentNumber = double.Parse(textBox1.Text);
+
+            if (!string.IsNullOrEmpty(operation))
+            {
+                if (operation == "/" && currentNumber == 0)
+                {
+                    textBox1.Text = "На ноль делить нельзя";
+                    operation = "";
+                    return;
+                }
+
+                firstNum = Calculate(firstNum, currentNumber, operation);
+                textBox1.Text = firstNum.ToString();
+            }
+            else
+            {
+                firstNum = currentNumber;
+            }
+
+            operation = newOperation;
+            textBox1.Clear();
         }
     }
 }
