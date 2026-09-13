@@ -116,28 +116,52 @@ namespace WinFormsApp1
 
         private void equal_Click(object sender, EventArgs e)
         {
-            double secondNum = double.Parse(textBox1.Text);
-            double result;
-
-            switch (operation)
+            if(string.IsNullOrWhiteSpace(textBox1.Text) || textBox1.Text == "-")
             {
-                case "+":
-                    result = new Addition().Calculate(firstNum, secondNum);
-                    break;
-                case "-":
-                    result = new Subtraction().Calculate(firstNum, secondNum);
-                    break;
-                case "/":
-                    result = new Division().Calculate(firstNum, secondNum);
-                    break;
-                case "*":
-                    result = new Multiplication().Calculate(firstNum, secondNum);
-                    break;
-                default:
-                    return;
+                return;
             }
 
+            if(string.IsNullOrEmpty(operation))
+            {
+                return;
+            }
+
+            double secondNum = double.Parse(textBox1.Text);
+
+            if(operation == "/" && secondNum == 0)
+            {
+                textBox1.Text = "На ноль делить нельзя";
+                operation = "";
+                return;
+            }
+
+            double result = Calculate(firstNum, secondNum, operation);
+
             textBox1.Text = result.ToString();
+
+            firstNum = result;
+            operation = "";
+        }
+
+        private double Calculate(double first, double second, string op)
+        {
+            switch (op)
+            {
+                case "+":
+                    return new Addition().Calculate(first, second);
+
+                case "-":
+                    return new Subtraction().Calculate(first, second);
+
+                case "*":
+                    return new Multiplication().Calculate(first, second);
+
+                case "/":
+                    return new Division().Calculate(first, second);
+
+                default:
+                    return second;
+            }
         }
     }
 }
